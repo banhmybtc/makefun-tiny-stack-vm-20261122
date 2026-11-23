@@ -75,13 +75,15 @@ function run(prog, input) {
   }
 }
 
-for (const id of fs.readdirSync("/input").sort()) {
-  const dir = "/input/" + id;
+const I = process.env.MAKEFUN_INPUT_DIR ?? "/input";
+const O = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
+for (const id of fs.readdirSync(I).sort()) {
+  const dir = I + "/" + id;
   if (!fs.statSync(dir).isDirectory()) continue;
   const prog = fs.readFileSync(dir + "/program.bin");
   const input = fs.existsSync(dir + "/input.bin") ? fs.readFileSync(dir + "/input.bin") : Buffer.alloc(0);
   const [stdout, code] = run(prog, input);
-  fs.mkdirSync("/output/" + id, { recursive: true });
-  fs.writeFileSync("/output/" + id + "/stdout.bin", stdout);
-  fs.writeFileSync("/output/" + id + "/exit.txt", String(code) + "\n");
+  fs.mkdirSync(O + "/" + id, { recursive: true });
+  fs.writeFileSync(O + "/" + id + "/stdout.bin", stdout);
+  fs.writeFileSync(O + "/" + id + "/exit.txt", String(code) + "\n");
 }
